@@ -1,16 +1,17 @@
 var LLL = require('./key.js');
 var fs = require('fs');
 
-
 var option = process.argv[2];
 var search = process.argv[3];
 
-//console.log(option);
-//console.log(search);
+if (option == 'do-what-it-says') {
+    sayWhat();
+}
 
 
-
-if (option == 'my-tweets') {
+if (option == null) {
+    console.log('Options are: my-tweets, spotify-this-song, movie-this, or do-what-it-says');
+} else if (option == 'my-tweets') {
     tweet();
 
 } else if (option == 'spotify-this-song') {
@@ -26,16 +27,9 @@ if (option == 'my-tweets') {
     }
     movie(search);
 
-} else if (option == 'do-what-it-says') {
-    console.log('doing what it says');
-
 } else {
-    crap();
     console.log('You dont follow directions very well.')
 }
-///console.log(LLL.twitterKeys);
-
-
 
 function movie(search) {
     var request = require('request');
@@ -45,6 +39,8 @@ function movie(search) {
     request(url, function(err, response, body) {
         //console.log(body);
         body = JSON.parse(body);
+        console.log('IMDB Results:')
+        console.log('--------------');
         console.log('Title: ' + body.Title);
         console.log('Year: ' + body.Year);
         console.log('IMDB Rating: ' + body.imdbRating);
@@ -52,43 +48,39 @@ function movie(search) {
         console.log('Language: ' + body.Language);
         console.log('Plot: ' + body.Plot);
         console.log('Actors: ' + body.Actors);
+        console.log('Rotten Tomato Rating: ' + body.tomatoUserRating);
+        console.log('Rotten Tomato URL: ' + body.tomatoURL);
 
-        //http://api.rottentomatoes.com/api/public/v1.0/movies.json?q=demolition+man&page_limit=10&page=1&apikey=
-        console.log('Rotten Tomatoe Rating: ' + body.tomatoUserRating);
-        console.log('Rotten Tomatoe URL: ' + body.tomatoURL);
+        var logThis = 'IMDB Results: \n--------------\nTitle: ' + body.Title + '\nYear: ' + body.Year + '\nIMDB Rating: ' + body.imdbRating + '\nCountry: ' + body.Country + '\nLanguage: ' + body.Language + '\nPlot: ' + body.Plot + '\nActors: ' + body.Actors + '\nRotten Tomato Rating: ' + body.tomatoUserRating + '\nRotten Tomato URL: ' + body.tomatoURL + '\n*******************\n\n';
+
+        console.log(logThis);
+        addToLog(logThis);
+
     })
 
 
 }
 
 function song(search) {
-    var request = require('request');
-    var Spot = require('spotify-web-api-node');
-    var config = require('./key.js');
+    var spotify = require('spotify');
 
-    var S = new Spot();
-    //    https://developer.spotify.com/web-api/console/get-search-item/?q=muse&type=track
+    spotify.search({ type: 'track', query: search }, function(err, data) {
+        if (err) {
+            console.log('Error occurred: ' + err);
+            return;
+        }
+        // console.log(data.tracks.items[0]);
+        console.log('spotifying')
+        console.log('--------------');
+        console.log('Artist(s): ' + data.tracks.items[0].artists[0].name)
+        console.log('Song Name: ' + data.tracks.items[0].name);
+        console.log('Preview Link: ' + data.tracks.items[0].preview_url);
+        console.log('Album: ' + data.tracks.items[0].album.name);
 
-    S.searchTracks('track:' + search)
-        .then(function(data) {
-            console.log(data.body);
-        }, function(err) {
-            console.log('Something went wrong!', err);
-        });
+        var logThis = 'Spotify Results\n--------------\nArtist(s):' + data.tracks.items[0].artists[0].name + '\nSong Name: ' + data.tracks.items[0].name + '\nPreview Link: ' + data.tracks.items[0].preview_url + '\nAlbum: ' + data.tracks.items[0].album.name + '\n*******************\n\n';
+        addToLog(logThis);
 
-
-    // var url = 'https://developer.spotify.com/web-api/console/get-search-item/?q=' + search + 'type=track' + '-H "Authorization: Bearer BQBDINp_8az6EDjhlRMbqeljsicUEAnQJDRPggftPy0gUxdzrIza1Tmm3ZCNwXoQU02HLcYp4BDWe-NWo0lWRABA0f_K5ewlLkuB6jT_GgPAZ_f06YoFcmDlmGYVfEr6q5hglVtl4D52IbPLgQjT7IeG41w"'
-    //     request(url, function(err, response, body) {
-    //             //console.log(body);
-    //             body = JSON.parse(body);
-    //             console.log(body);
-    //             console.log('spotifying')
-    //             console.log('----------');
-    //             console.log('Artist(s): ')
-    //             console.log('Song Name: ');
-    //             console.log('Preview Link: ');
-    //             console.log('Album: ');
-    //         })
+    });
 }
 
 function tweet() {
@@ -96,24 +88,45 @@ function tweet() {
     var config = require('./key.js');
 
     var T = new Twit(config.tweetKey)
-
-    T.get('statuses/user_timeline', { screen_name: 'JRDurant', count: 20 }, function(err, data, response) {
-
-        for (var i = 0; i < data.length; i++)
+    
+    console.log('20 most recent Tweets:');
+    console.log('----------------------');
+    T.get('statuses/user_timeline', { screen_name: 'JRDurant', count: 20 }, function(err, data, response){
+       var logThis = 'Twitter Results\n--------------\n';
+        for (var i = 0; i < data.length; i++) {
 
             console.log(data[i].created_at + " " + data[i].text);
+            var tweet_date = data[i].created_at;
+            var tweet_text = data[i].text;
+        logThis = logThis + '\n' + tweet_date + " - " + tweet_text ;
+        }
+        logThis = logThis +'\n*******************\n\n'
+        addToLog(logThis);
     })
-
+    
 }
 
 function sayWhat() {
+    fs.readFile('./random.txt', 'utf8', function read(err, data) {
+        if (err) {
+            throw err;
+        }
+        output = data.split(',');
+        option = output[0];
+        search = output[1];
 
+        if (option == 'spotify-this-song') {
+            song(search);
+        } else if (option == 'movie-this') {
+            movie(search);
+        }
+    });
 }
 
-function addToLog() {
+function addToLog(log) {
     // This block of code will create a file called "movies.txt".
     // It will then print "Inception, Die Hard" in the file
-    fs.appendFile("log.txt", 'Inception, Die Hard', function(err) {
+    fs.appendFile("log.txt", log, function(err) {
 
         // If the code experiences any errors it will log the error to the console. 
         if (err) {
@@ -121,43 +134,6 @@ function addToLog() {
         }
 
         // Otherwise, it will print: "movies.txt was updated!"
-        console.log("movies.txt was updated!");
-    });
-}
-
-function crap() {
-    var SpotifyWebApi = require("../");
-
-    /*
-     * This example shows how to search for a track. The endpoint is documented here:
-     * https://developer.spotify.com/web-api/search-item/
-     * Please note that this endpoint does not require authentication. However, using an access token
-     * when making requests will give your application a higher rate limit.
-     */
-
-    var spotifyApi = new SpotifyWebApi();
-
-    spotifyApi.searchTracks('Love', function(err, data) {
-        if (err) {
-            console.error('Something went wrong', err.message);
-            return;
-        }
-
-        // Print some information about the results
-        console.log('I got ' + data.body.tracks.total + ' results!');
-
-        // Go through the first page of results
-        var firstPage = data.body.tracks.items;
-        console.log('The tracks in the first page are.. (popularity in parentheses)');
-
-        /*
-         * 0: All of Me (97)
-         * 1: My Love (91)
-         * 2: I Love This Life (78)
-         * ...
-         */
-        firstPage.forEach(function(track, index) {
-            console.log(index + ': ' + track.name + ' (' + track.popularity + ')');
-        });
+        console.log("log.txt was updated!");
     });
 }
