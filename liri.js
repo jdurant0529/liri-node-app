@@ -1,9 +1,28 @@
 var LLL = require('./key.js');
 var fs = require('fs');
 
-var option = process.argv[2];
-var search = process.argv[3];
+var nodeArgs = process.argv;
 
+var search = '';
+
+for (var i=3; i<nodeArgs.length; i++){
+
+    if (i>3 && i< nodeArgs.length){
+
+        search = search + "+" + nodeArgs[i];
+
+    }
+
+    else {
+
+        search = search + nodeArgs[i];
+    }
+}
+
+var option = process.argv[2];
+//var search = process.argv[3];
+
+console.log(search);
 if (option == 'do-what-it-says') {
     sayWhat();
 }

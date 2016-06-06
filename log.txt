@@ -69,3 +69,55 @@ Rotten Tomato Rating: 3.8
 Rotten Tomato URL: http://www.rottentomatoes.com/m/mr-nobody/
 *******************
 
+IMDB Results: 
+--------------
+Title: Demolition
+Year: 2015
+IMDB Rating: 7.5
+Country: USA
+Language: English
+Plot: As an investment banker struggles after losing his wife in a tragic car crash, his increasingly confessional series of letters to a vending machine company catch the attention of a customer service rep with whom he forms an unlikely connection.
+Actors: Jake Gyllenhaal, Naomi Watts, Chris Cooper, Judah Lewis
+Rotten Tomato Rating: N/A
+Rotten Tomato URL: N/A
+*******************
+
+IMDB Results: 
+--------------
+Title: undefined
+Year: undefined
+IMDB Rating: undefined
+Country: undefined
+Language: undefined
+Plot: undefined
+Actors: undefined
+Rotten Tomato Rating: undefined
+Rotten Tomato URL: undefined
+*******************
+
+IMDB Results: 
+--------------
+Title: undefined
+Year: undefined
+IMDB Rating: undefined
+Country: undefined
+Language: undefined
+Plot: undefined
+Actors: undefined
+Rotten Tomato Rating: undefined
+Rotten Tomato URL: undefined
+*******************
+
+IMDB Results: 
+--------------
+Title: Demolition Man
+Year: 1993
+IMDB Rating: 6.6
+Country: USA
+Language: English
+Plot: A police officer is brought out of suspended animation in prison to pursue an old ultra-violent nemesis who is loose in a non-violent future society.
+Actors: Sylvester Stallone, Wesley Snipes, Sandra Bullock, Nigel Hawthorne
+Rotten Tomato Rating: 3.1
+Rotten Tomato URL: http://www.rottentomatoes.com/m/demolition_man/
+*******************
+
